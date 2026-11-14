@@ -27,7 +27,7 @@ const DEFAULT: Appearance = {
   opacity: 0.6,
   aurora: true,
   auroraColor: '#00d4ff',
-  auroraIntensity: 60,
+  auroraIntensity: 3,
 };
 
 interface Ctx {
@@ -41,7 +41,7 @@ const C = createContext<Ctx | null>(null);
 export function AppearanceProvider({ children }: { children: ReactNode }) {
   const [appearance, setA] = useState<Appearance>(() => {
     try {
-      const raw = localStorage.getItem('nex_appearance');
+      const raw = localStorage.getItem('nex_appearance_v2');
       return raw ? { ...DEFAULT, ...JSON.parse(raw) } : DEFAULT;
     } catch { return DEFAULT; }
   });
@@ -49,7 +49,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   const setAppearance = (patch: Partial<Appearance>) => {
     setA(prev => {
       const next = { ...prev, ...patch };
-      localStorage.setItem('nex_appearance', JSON.stringify(next));
+      localStorage.setItem('nex_appearance_v2', JSON.stringify(next));
       return next;
     });
   };
@@ -67,6 +67,7 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   // Apply aurora
   useEffect(() => {
     document.body.classList.toggle('aurora-on', appearance.aurora);
+    document.body.classList.toggle('aurora-multicolor', appearance.aurora && appearance.auroraColor === 'multicolor');
     const color = appearance.auroraColor === 'multicolor' ? '#ec4899' : appearance.auroraColor;
     document.documentElement.style.setProperty('--aurora-color', color);
     document.documentElement.style.setProperty('--aurora-intensity', String(appearance.auroraIntensity));
