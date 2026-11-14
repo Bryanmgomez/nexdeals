@@ -34,6 +34,12 @@ Frontend en http://localhost:5173 (proxy /api -> 8080)
 docker compose up --build
 ```
 
+## Descarga (Windows)
+Última versión:
+https://github.com/Bryanmgomez/nexdeals/releases/latest/download/NEXDEALS-1.0.Setup.exe
+
+Nota: el nombre exacto del instalador puede incluir el número de versión; consulta GitHub Releases para versiones anteriores.
+
 ## Variables de entorno
 - `STEAM_API_KEY` (opcional, no requerido para endpoints públicos usados)
 - `OPENAI_API_KEY` (opcional, para NEX AI con OpenAI; sin ella usa modo heurístico)

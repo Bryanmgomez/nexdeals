@@ -1,0 +1,80 @@
+name: Release Windows
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Copy frontend into backend static resources
+        shell: pwsh
+        run: |
+          $dest = "backend/src/main/resources/static"
+          if (Test-Path $dest) { Remove-Item -Recurse -Force $dest }
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          Copy-Item -Recurse -Force "frontend/dist/*" $dest
+
+      - name: Build backend (tests + package)
+        working-directory: backend
+        run: mvn -B clean verify
+
+      - name: Verify jar exists
+        shell: pwsh
+        run: |
+          $jar = Get-ChildItem backend/target/*.jar | Where-Object { $_.Name -notlike "*sources*" } | Select-Object -First 1
+          if (-not $jar) { throw "Jar not found" }
+          if ($jar.Length -eq 0) { throw "Jar is empty" }
+          echo "Jar: $($jar.FullName) ($($jar.Length) bytes)"
+
+      - name: Create Windows installer with jpackage
+        shell: pwsh
+        run: |
+          $jar = (Get-ChildItem backend/target/*.jar | Where-Object { $_.Name -notlike "*sources*" } | Select-Object -First 1).FullName
+          if (Test-Path dist) { Remove-Item -Recurse -Force dist }
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          jpackage --input (Split-Path $jar) --name "NEXDEALS" --main-jar (Split-Path $jar -Leaf) --main-class com.nexdeals.NexDealsApplication --type exe --dest dist --win-dir-chooser --win-menu --win-shortcut --app-version "1.0.${{ github.run_number }}"
+          $exe = Get-ChildItem dist/*.exe | Select-Object -First 1
+          if (-not $exe) { throw "Exe not created" }
+          if ($exe.Length -lt 1MB) { throw "Exe too small" }
+          echo "Exe: $($exe.FullName) ($($exe.Length) bytes)"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: "NEXDEALS v1.0.${{ github.run_number }}"
+          body: |
+            Automated release from commit ${{ github.sha }}.
+            - Windows installer (.exe) included.
+            - Portable version not available in this build.
+          files: dist/*.exe
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
