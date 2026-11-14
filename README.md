@@ -36,7 +36,7 @@ docker compose up --build
 
 ## Descarga (Windows)
 Última versión:
-https://github.com/Bryanmgomez/nexdeals/releases/latest/download/NEXDEALS-1.0.Setup.exe
+https://github.com/Bryanmgomez/nexdeals/releases/latest/download/NEXDEALS-Setup.exe
 
 Nota: el nombre exacto del instalador puede incluir el número de versión; consulta GitHub Releases para versiones anteriores.
 

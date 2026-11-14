@@ -62,7 +62,10 @@ jobs:
           $exe = Get-ChildItem dist/*.exe | Select-Object -First 1
           if (-not $exe) { throw "Exe not created" }
           if ($exe.Length -lt 1MB) { throw "Exe too small" }
-          echo "Exe: $($exe.FullName) ($($exe.Length) bytes)"
+          # Rename to a stable filename for permanent download link
+          $stable = Join-Path (Split-Path $exe.FullName) "NEXDEALS-Setup.exe"
+          Rename-Item -Path $exe.FullName -NewName "NEXDEALS-Setup.exe" -Force
+          echo "Exe: $stable ($($exe.Length) bytes)"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
