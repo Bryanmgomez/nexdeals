@@ -72,6 +72,18 @@ export default function Personalization() {
           </label>
         </div>
         <button onClick={() => setAppearance({ bgType: 'default', imageData: null })} className="bg-red-600/40 px-3 py-1 rounded text-sm">Quitar fondo personalizado</button>
+
+        <div className="mt-4 grid md:grid-cols-2 gap-3">
+          <label className="text-sm">Brillo: {appearance.bgBrightness}%
+            <input type="range" min={50} max={150} value={appearance.bgBrightness} onChange={e => setAppearance({ bgBrightness: Number(e.target.value) })} className="ml-2 w-full" />
+          </label>
+          <label className="text-sm">Contraste: {appearance.bgContrast}%
+            <input type="range" min={50} max={150} value={appearance.bgContrast} onChange={e => setAppearance({ bgContrast: Number(e.target.value) })} className="ml-2 w-full" />
+          </label>
+          <label className="text-sm">Saturación: {appearance.bgSaturation}%
+            <input type="range" min={0} max={200} value={appearance.bgSaturation} onChange={e => setAppearance({ bgSaturation: Number(e.target.value) })} className="ml-2 w-full" />
+          </label>
+        </div>
       </div>
 
       <div className="card p-6 mb-6">
@@ -108,6 +120,19 @@ export default function Personalization() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="card p-6 mb-6">
+        <h2 className="font-bold mb-3">Velocidad de la aurora</h2>
+        <label className="text-sm block mb-2">Botones: {appearance.speedButtons}s
+          <input type="range" min={1} max={20} value={appearance.speedButtons} onChange={e => setAppearance({ speedButtons: Number(e.target.value) })} className="ml-2 w-full" />
+        </label>
+        <label className="text-sm block mb-2">Tarjetas: {appearance.speedCards}s
+          <input type="range" min={1} max={20} value={appearance.speedCards} onChange={e => setAppearance({ speedCards: Number(e.target.value) })} className="ml-2 w-full" />
+        </label>
+        <label className="text-sm block">Fondos animados: {appearance.speedBg}s
+          <input type="range" min={2} max={40} value={appearance.speedBg} onChange={e => setAppearance({ speedBg: Number(e.target.value) })} className="ml-2 w-full" />
+        </label>
       </div>
 
       <button onClick={reset} className="bg-red-600/40 px-4 py-2 rounded text-sm">Restablecer todo</button>

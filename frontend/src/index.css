@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@property --aurora-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 :root {
   --bg: #0a0e1a;
   --accent: #00d4ff;
@@ -35,32 +41,47 @@ button { transition: transform .15s ease, filter .15s ease; }
 button:hover { filter: brightness(1.08); }
 button:active { transform: scale(.98); }
 
-body.aurora-on .card, body.aurora-on button {
+/* Aurora glow (subtle) for non-multicolor */
+body.aurora-on:not(.aurora-multicolor) .card,
+body.aurora-on:not(.aurora-multicolor) button {
   box-shadow: 0 0 calc(var(--aurora-intensity,3) * 0.4px) var(--aurora-color, #00d4ff);
   position: relative;
 }
-body.aurora-on .card:hover, body.aurora-on button:hover {
+body.aurora-on:not(.aurora-multicolor) .card:hover,
+body.aurora-on:not(.aurora-multicolor) button:hover {
   box-shadow: 0 0 calc(var(--aurora-intensity,3) * 0.8px) var(--aurora-color, #00d4ff);
 }
 
-/* RGB multicolor effect */
+/* Aurora border-only RGB effect (multicolor) */
+body.aurora-on.aurora-multicolor .card,
+body.aurora-on.aurora-multicolor button {
+  position: relative;
+  border: 2px solid transparent;
+}
 body.aurora-on.aurora-multicolor .card::before,
 body.aurora-on.aurora-multicolor button::before {
   content: '';
   position: absolute;
   inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
-  background-size: 400% 400%;
-  animation: rgbShift 4s linear infinite;
-  filter: blur(calc(var(--aurora-intensity,3) * 0.6px + 2px));
+  background: conic-gradient(from var(--aurora-angle, 0deg), #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 2px;
+  animation: auroraSpin var(--aurora-speed-cards, 6s) linear infinite;
+  filter: blur(calc(var(--aurora-intensity,3) * 0.3px + 1px));
   z-index: -1;
-  opacity: 0.7;
+  opacity: 0.85;
 }
-@keyframes rgbShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes auroraSpin {
+  to { --aurora-angle: 360deg; }
+}
+
+/* Speed for buttons vs cards: buttons faster */
+body.aurora-on.aurora-multicolor button::before {
+  animation-duration: var(--aurora-speed-buttons, 4s);
 }
 
 input, select { transition: border-color .15s ease, box-shadow .15s ease; }
