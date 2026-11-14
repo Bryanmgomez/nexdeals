@@ -35,6 +35,13 @@ button { transition: transform .15s ease, filter .15s ease; }
 button:hover { filter: brightness(1.08); }
 button:active { transform: scale(.98); }
 
+body.aurora-on .card, body.aurora-on button {
+  box-shadow: 0 0 calc(var(--aurora-intensity,60) * 0.4px) var(--aurora-color, #00d4ff);
+}
+body.aurora-on .card:hover, body.aurora-on button:hover {
+  box-shadow: 0 0 calc(var(--aurora-intensity,60) * 0.8px) var(--aurora-color, #00d4ff);
+}
+
 input, select { transition: border-color .15s ease, box-shadow .15s ease; }
 input:focus, select:focus { box-shadow: 0 0 0 2px rgba(0,212,255,0.25); }
 

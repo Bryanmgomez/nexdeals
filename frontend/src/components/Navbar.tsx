@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Search, Bell, LogOut, Moon, Sun } from 'lucide-react';
+import { Search, Bell, LogOut, Palette } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const CURRENCIES = ['COP', 'USD', 'EUR', 'MXN', 'BRL', 'GBP', 'JPY'];
@@ -9,7 +9,6 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const nav = useNavigate();
   const [currency, setCurrency] = useState(localStorage.getItem('nex_currency') || 'COP');
-  const [dark, setDark] = useState(localStorage.getItem('nex_theme') !== 'light');
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
@@ -26,14 +25,6 @@ export default function Navbar() {
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [nav]);
-
-  useEffect(() => {
-    localStorage.setItem('nex_theme', dark ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark', dark);
-    document.documentElement.classList.toggle('light', !dark);
-    document.body.style.backgroundColor = dark ? '#0a0e1a' : '#f3f4f6';
-    document.body.style.color = dark ? '#e5e7eb' : '#111827';
-  }, [dark]);
 
   useEffect(() => {
     if (!user) return;
@@ -60,9 +51,9 @@ export default function Navbar() {
           {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
 
-        <button onClick={() => setDark(!dark)} className="text-gray-300 hover:text-cyan-400">
-          {dark ? <Sun size={18}/> : <Moon size={18}/>}
-        </button>
+        <Link to="/personalization" className="text-gray-300 hover:text-cyan-400 flex items-center gap-1">
+          <Palette size={18}/>Personalización
+        </Link>
 
         {user && (
           <>

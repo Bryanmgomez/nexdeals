@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
+import GameCard from '../components/GameCard';
 
 export default function Wishlist() {
   const { user } = useAuth();
   const [wishlists, setWishlists] = useState<any[]>([]);
   const [name, setName] = useState('');
+  const [sort, setSort] = useState('name');
+  const [recommended, setRecommended] = useState<any[]>([]);
 
   const load = () => {
     if (!user) return;
@@ -15,6 +18,7 @@ export default function Wishlist() {
         return { ...w, items: items.data };
       })).then(setWishlists);
     }).catch(() => {});
+    api.get('/games?size=6').then(r => setRecommended(r.data.content || [])).catch(() => {});
   };
 
   useEffect(load, [user]);
@@ -55,14 +59,27 @@ export default function Wishlist() {
           className="flex-1 bg-gray-900 border border-violet-500/30 rounded px-3 py-2" />
         <button onClick={create} className="bg-cyan-600 px-4 py-2 rounded">Crear</button>
       </div>
-      {wishlists.map(wl => (
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-sm text-gray-400">Ordenar:</span>
+        <select value={sort} onChange={e => setSort(e.target.value)} className="bg-gray-900 border border-violet-500/30 rounded px-2 py-1 text-sm">
+          <option value="name">Nombre</option>
+          <option value="target">Precio objetivo</option>
+        </select>
+      </div>
+
+      {wishlists.map(wl => {
+        const items = [...(wl.items || [])].sort((a: any, b: any) => {
+          if (sort === 'target') return (a.targetPrice || 0) - (b.targetPrice || 0);
+          return (a.game?.title || '').localeCompare(b.game?.title || '');
+        });
+        return (
         <div key={wl.id} className="card p-4 mb-4">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-lg">{wl.name}</h2>
             <button onClick={() => exportCsv(wl)} className="text-xs text-cyan-400 hover:underline">Exportar CSV</button>
           </div>
           {(!wl.items || wl.items.length === 0) && <p className="text-gray-500 text-sm">Sin juegos.</p>}
-          {wl.items?.map((it: any) => (
+          {items.map((it: any) => (
             <div key={it.id} className="flex items-center justify-between py-2 border-b border-gray-800 last:border-0">
               <div className="flex-1">
                 <p className="font-medium">{it.game?.title}</p>
@@ -76,7 +93,17 @@ export default function Wishlist() {
             </div>
           ))}
         </div>
-      ))}
+        )}
+      )}
+
+      {recommended.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-3">Juegos recomendados</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {recommended.map(g => <GameCard key={g.id} game={g} />)}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

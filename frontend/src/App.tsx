@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { AppearanceProvider } from './context/AppearanceContext';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -13,10 +14,12 @@ import Auth from './pages/Auth';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 import Affiliates from './pages/Affiliates';
+import Personalization from './pages/Personalization';
 import NexAi from './pages/NexAi';
 
 export default function App() {
   return (
+    <AppearanceProvider>
     <ToastProvider>
     <AuthProvider>
       <BrowserRouter>
@@ -32,11 +35,13 @@ export default function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/affiliates" element={<Affiliates />} />
+          <Route path="/personalization" element={<Personalization />} />
           <Route path="/ai" element={<NexAi />} />
         </Routes>
         <Footer />
       </BrowserRouter>
     </AuthProvider>
     </ToastProvider>
+    </AppearanceProvider>
   );
 }
