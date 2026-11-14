@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nexdeals}
+    username: ${DB_USER:nexdeals}
+    password: ${DB_PASSWORD:nexdeals}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nexdeals}
+    user: ${DB_USER:nexdeals}
+    password: ${DB_PASSWORD:nexdeals}

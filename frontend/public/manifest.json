@@ -1,0 +1,9 @@
+{
+  "name": "NEXDEALS",
+  "short_name": "NEXDEALS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#8b5cf6",
+  "icons": []
+}

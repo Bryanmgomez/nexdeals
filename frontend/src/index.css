@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0e1a;
+  --accent: #00d4ff;
+  --violet: #8b5cf6;
+}
+
+body {
+  background: radial-gradient(1200px 600px at 10% 0%, rgba(139,92,246,0.12), transparent 60%),
+              radial-gradient(1000px 500px at 90% 10%, rgba(0,212,255,0.10), transparent 60%),
+              #0a0e1a;
+  color: #e5e7eb;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.light body { background: #f3f4f6; color: #111827; }
+
+.card {
+  background: linear-gradient(180deg, rgba(20,24,40,0.85), rgba(10,14,26,0.85));
+  border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,212,255,0.12);
+  border-color: rgba(0,212,255,0.4);
+}
+
+header { backdrop-filter: blur(12px); }
+
+button { transition: transform .15s ease, filter .15s ease; }
+button:hover { filter: brightness(1.08); }
+button:active { transform: scale(.98); }
+
+input, select { transition: border-color .15s ease, box-shadow .15s ease; }
+input:focus, select:focus { box-shadow: 0 0 0 2px rgba(0,212,255,0.25); }
+
+main, .page { animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity:1; transform:none;} }
+
+.glow {
+  box-shadow: 0 0 24px rgba(0,212,255,0.15);
+}

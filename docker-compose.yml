@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: nexdeals
+      POSTGRES_USER: nexdeals
+      POSTGRES_PASSWORD: nexdeals
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: nexdeals
+      DB_USER: nexdeals
+      DB_PASSWORD: nexdeals
+      JWT_SECRET: change-me-in-production-32chars-minimum!!
+      CORS_ORIGINS: http://localhost:3000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
